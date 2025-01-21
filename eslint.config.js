@@ -14,6 +14,13 @@ export default tseslint.config(
             ecmaVersion: 2020,
             globals: globals.browser,
         },
+        ignores: [
+            '.idea',
+            'node_modules',
+            'build',
+            'dist',
+            'public/mockServiceWorker.js',
+        ],
         plugins: {
             'react-hooks': reactHooks,
             'react-refresh': reactRefresh,
@@ -28,14 +35,21 @@ export default tseslint.config(
 
             semi: ['error', 'always'],
             quotes: ['error', 'single'],
-            indent: ['error', 2],
-            'max-len': ['error', { 'code': 80 }],
+            indent: ['error', 2, { SwitchCase: 1 }],
+            'max-len': [
+                'error',
+                { code: 80, ignorePattern: '^import\\s.+\\sfrom\\s.+;$' },
+            ],
             'object-curly-spacing': ['error', 'always'],
             'prefer-const': 'error',
             'no-var': 'error',
             'no-console': 'warn',
-            'arrow-body-style': ['error', 'as-needed', { 'requireReturnForObjectLiteral': true }],
-            
+            'arrow-body-style': [
+                'error',
+                'as-needed',
+                { requireReturnForObjectLiteral: true },
+            ],
+
             'padding-line-between-statements': [
                 'error',
                 { blankLine: 'always', prev: '*', next: 'return' },
@@ -49,17 +63,16 @@ export default tseslint.config(
                     prev: ['const', 'let', 'var'],
                     next: ['const', 'let', 'var'],
                 },
-                { blankLine: 'always', prev: ['case', 'default'], next: '*' },
+                {
+                    blankLine: 'always',
+                    prev: ['case', 'default'],
+                    next: '*',
+                },
             ],
             'import/order': [
                 'error',
                 {
-                    groups: [
-                        ['builtin', 'external'],
-                        'internal',
-                        'sibling',
-                        'index',
-                    ],
+                    groups: [['builtin', 'external'], 'internal', 'sibling', 'index'],
                 },
             ],
         },

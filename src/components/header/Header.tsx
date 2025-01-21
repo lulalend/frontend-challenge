@@ -1,33 +1,54 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import classNames from 'classnames';
 import styles from './styles.module.css';
-import { Modal } from '../modal/Modal.tsx';
-import { AuthPage } from '../../pages/auth/AuthPage.tsx';
 
 export const Header = () => {
+  const [isFavorite, setIsFavorite] = useState(false);
   const navigate = useNavigate();
-  const [isAuthActive, setIsAuthActive] = useState<boolean>(false);
+
+  useEffect(() => {
+    const storedPage = sessionStorage.getItem('currentPage');
+
+    if (storedPage === 'favorites') {
+      setIsFavorite(true);
+      navigate('/favorites');
+    } else {
+      setIsFavorite(false);
+      navigate('/');
+    }
+  }, [navigate]);
+
+  const handleAllCats = () => {
+    setIsFavorite(false);
+    sessionStorage.setItem('currentPage', 'main');
+    navigate('/');
+  };
+
+  const handleFavoriteCats = () => {
+    setIsFavorite(true);
+    sessionStorage.setItem('currentPage', 'favorites');
+    navigate('/favorites');
+  };
 
   return (
-    <div className={styles.headerContainer}>
-      <span
-        className={styles.headerTitle}
-        onClick={() => navigate('/')}
-      >
-        Вкусно и Просто
-      </span>
+    <header className={styles.header}>
       <div
-        className={styles.headerAuth}
-        onClick={() => setIsAuthActive(true)}
+        className={classNames(styles.section, {
+          [styles.activeSection]: !isFavorite,
+        })}
+        onClick={handleAllCats}
       >
-        Войти
+        Все котики
       </div>
-
-      {isAuthActive && (
-        <Modal isActive={isAuthActive} setIsActive={setIsAuthActive}>
-          <AuthPage />
-        </Modal>
-      )}
-    </div>
+      <div
+        className={classNames(styles.section, {
+          [styles.activeSection]: isFavorite,
+        })}
+        onClick={handleFavoriteCats}
+      >
+        Любимые котики
+      </div>
+    </header>
   );
 };

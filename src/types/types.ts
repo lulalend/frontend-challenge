@@ -1,5 +1,8 @@
-export type Recipe = {
-  id: string;
-  name: string;
-  image: string;
+export type Cat = {
+    id: number;
+    url: string;
+    width: number;
+    height: number;
+    breeds: object[];
+    isFavorite: boolean;
 }

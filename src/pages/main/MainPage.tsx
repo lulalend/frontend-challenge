@@ -1,39 +1,39 @@
-import { useState } from 'react';
+import { useEffect } from 'react';
+import { useInView } from 'react-intersection-observer';
 import styles from './styles.module.css';
-import Filter from '../../assets/svg/filter.svg';
-import FocusFilter from '../../assets/svg/focus-filter.svg';
-import Search from '../../assets/svg/search.svg';
+import { useInfCats } from '../../api/cats/useCats.ts';
+import { CatCard } from '../../components/cats/card/CatCard.tsx';
 
 export const MainPage = () => {
-  const [showFilters, setShowFilters] = useState(false);
+  const {
+    data, isLoading, isFetchingNextPage, fetchNextPage,
+  } = useInfCats();
+  const { ref, inView } = useInView();
 
-  const handlerFilterClick = () => {
-    setShowFilters((showFilters) => !showFilters);
-  };
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
+    }
+  }, [fetchNextPage, inView]);
+
+  if (isLoading) {
+    return <div className={styles.container}>Загрузка...</div>;
+  }
 
   return (
-    <div className={styles.container}>
-      <div className={styles.search}>
-        <input
-          style={{ backgroundImage: `url(${Search})` }}
-          placeholder='Ищем рецепты...'
-        />
-        <div className={styles.filter} onClick={handlerFilterClick}>
-          {!showFilters ? <img src={Filter} alt='Filter icon' />
-            : <img src={FocusFilter} alt='Filter icon' /> }
-          <span>Фильтры</span>
-        </div>
+    <div>
+      {data?.pages.map((page, index) => {
+        return <div className={styles.container} key={index}>{
+          page.map((cat) => (
+            <CatCard key={cat.id} cat={cat} />
+          ))
+        }</div>;
+      })}
+      <div ref={ref} className={styles.loadMore}>
+        {isFetchingNextPage
+          ? '...загружаем ещё котиков...'
+          : 'больше котиков нет!'}
       </div>
-      {showFilters &&
-        <div className={styles.filters}>
-          <input
-            placeholder='Содержит ингредиенты...'
-          />
-          <input
-            placeholder='Не содержит ингредиенты...'
-          />
-        </div>
-      }
     </div>
   );
 };
