@@ -7,7 +7,7 @@ export const getConfig = () => {
     timeout: 2000,
     headers: {
       'x-api-key':
-        'live_iR6cvS1DmNTdZlG2BFdvYKy1dQYpTcRf7Zo0TNlLd2lSn72XXDZcPvXO755EvlHZ',
+        'my_key',
       'Content-Type': 'application/json',
     },
   };
